@@ -26,60 +26,83 @@ case class Rotor(
    *  All the rotors have ABCDEF ... Z printed on them but can be rotated 360 degrees ...
    *  effectively changing the mapping but not offsets which typify a rotor.
    *
-   *  Rotor I in position A-1:
+   *  Rotor I starting with ring setting A-1:
    *  EKMFLGDQVZNTOWYHXUSPAIBRCJ
    *  abcdefghijklmnopqrstuvwxyz
    *
-   *  Rotor I in position B-2:
+   *  Rotor I starting with ring setting B-2:
    *  EKMFLGDQVZNTOWYHXUSPAIBRCJ
    *  zabcdefghijklmnopqrstuvwxy
    *
    */
 
-  val ringAsInt: Int = ring + 'A'
-  val posistionAsInt: Int = 'A' + position
-  val offset: Int = posistionAsInt - ringAsInt
+  val ring_int: Int = 1 // TODO ...
+  val position_int: Int = 2 // TODO
+  val offset: Int = position_int - ring_int
+  val alphabet_str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   val alphabet_size = 26
 
-  def get_char(c: Char, w: Seq[Char]): Char = {
-    val adjustment = adjust(c)
-    val resultOffset = (alphabet_size + w(adjustment) - 'A' - offset) % alphabet_size
-    val output = ('A' + resultOffset).toChar
-    output
+  // TODO (implement object copy)
+  // https://medium.com/zyseme-technology/functional-references-lens-and-other-optics-in-scala-e5f7e2fdafe
+
+  def change_pos_test: Rotor = this.copy(
+    position = nextLetter(position.toString).charAt(0)
+  )
+
+  def nextLetter(s: String) = (s.head + 1).toChar.toString
+
+  /*
+  get_position_of: Gets the position of an element in list ...
+  @input <- String, Char
+  @output -> Int
+   */
+  def get_position_of(input_string: String, c: Char): Int = {
+    val new_list = input_string.toList
+    new_list.indexOf(c)
   }
 
-  private def adjust(c: Char): Int =
-    (alphabet_size + (c - 'A') + offset) % alphabet_size
+  /*
+  get_offset_alphabet: Gets a string of the alphabet starting with the char passed in ...
+  @input <- Char
+  @output -> List[Char]
+  */
+  def get_offset_alphabet(c: Char): String = {
+    val alphabet: Seq[Char] = ('A' to 'Z').toList
+    val position = get_position_of(alphabet_str, c)
+    val (left, right) = alphabet.splitAt(position)
+    val merged_list = right ++ left
+    merged_list.mkString
+  }
 }
   object Rotors {
-    def type_I(p: Char) = Rotor(
+    def rotor_I(p: Char) = Rotor(
       letter_roll  = "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
       position = p,
       notch  = 'R',
       ring   = 'A'
     )
-    def type_II(p: Char) = Rotor(
+    def rotor_II(p: Char) = Rotor(
       letter_roll  = "AJDKSIRUXBLHWTMCQGZNPYFVOE",
       position = p,
       notch  = 'F',
       ring   = 'A'
     )
-    def type_III(p: Char) = Rotor(
+    def rotor_III(p: Char) = Rotor(
       letter_roll  = "BDFHJLCPRTXVZNYEIWGAKMUSQO",
+      position = p,
       notch  = 'W',
-      ring   = 'A',
-      position = p
+      ring   = 'A'
     )
     def type_IV(p: Char) = Rotor(
       letter_roll  = "ESOVPZJAYQUIRHXLNFTGKDCMWB",
       position = p,
       notch  = 'K',
-      ring   = 'A',
+      ring   = 'A'
     )
     def type_V(p: Char) = Rotor(
       letter_roll  = "VZBRGITYUPSDNHLXAWMJQOFECK",
+      position = p,
       notch  = 'A',
-      ring   = 'A',
-      position = p
+      ring   = 'A'
     )
 }
