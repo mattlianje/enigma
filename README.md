@@ -3,7 +3,7 @@
 Pure functional paradigm implementation of the M3 [Enigma](https://en.wikipedia.org/wiki/Enigma_machine) Machine ...
 
 <p align="center">
-  <img width="500" src="data/enigma.jpg">
+  <img width="400" src="data/enigma.jpg">
 </p>
 
 ## References
