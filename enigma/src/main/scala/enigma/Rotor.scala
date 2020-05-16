@@ -1,14 +1,14 @@
 package enigma
 
 case class Rotor(
-                  // letter_map <- immutable sequence of chars that defines the rotor ...
-                  letter_roll: String,
-                  // position <- current char the rotor is at ...
-                  position: Char,
-                  // notch <- immutable attribute of the rotor type (i.e. for a II rotor, the notch is always the same) ...
-                  notch: Char,
-                  // ring <- wiring offset
-                  ring: Char = 'A') {
+  // letter_map <- immutable sequence of chars that defines the rotor ...
+  letter_roll: String,
+  // position <- current char the rotor is at ...
+  position: Char,
+  // notch <- immutable attribute of the rotor type (i.e. for a II rotor, the notch is always the same) ...
+  notch: Char,
+  // ring <- wiring offset
+  ring: Char = 'A') {
   /*
    *  NOTCH:
    *
@@ -30,18 +30,75 @@ case class Rotor(
    *
    */
 
-  val alphabet_str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  val ring_int: Int = getPositionOf(alphabet_str, ring)
-  val position_int: Int = getPositionOf(alphabet_str, position)
+  val alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  val ring_int: Int = getPositionOf(alphabet, ring)
+  val position_int: Int = getPositionOf(alphabet, position)
   val offset: Int = position_int - ring_int
   val alphabet_size = 26
 
   /*
-   * turnRotor inspired by: https://medium.com/zyseme-technology/functional-references-lens-and-other-optics-in-scala-e5f7e2fdafe
+   * turnRotor inspired by:
+   * https://medium.com/zyseme-technology/functional-references-lens-and-other-optics-in-scala-e5f7e2fdafe
    */
   def turnRotor: Rotor = this.copy(
+
     position = nextLetter(position.toString)
   )
+
+  /*
+   * encrypt: encrypted char that comes out of left of rotor after passing char into the right.
+   */
+  def encrypt(charIn:Char): Char = {
+    val char_pos_alphabet = alphabet.indexOf(charIn) + 1
+    val temp_sum = offset + char_pos_alphabet
+    if (temp_sum > alphabet_size) {
+      val new_index = (alphabet_size - temp_sum + 1).abs
+      val letter_roll_char = letter_roll.charAt(new_index)
+      if ((alphabet.indexOf(letter_roll_char) - offset) < 0) {
+        val encrypted_char = alphabet.charAt(alphabet_size - offset + alphabet.indexOf(letter_roll_char))
+        encrypted_char
+      }
+      else {
+        val encrypted_char = alphabet.charAt(alphabet.indexOf(letter_roll_char) - offset)
+        encrypted_char
+      }
+    }
+    else {
+      val new_index = char_pos_alphabet + offset - 1
+      val letter_roll_char = letter_roll.charAt(new_index)
+
+      if ((alphabet.indexOf(letter_roll_char) - offset) > 0) {
+        val encrypted_char = alphabet.charAt(alphabet.indexOf(letter_roll_char) - offset)
+        encrypted_char
+      }
+      else {
+        val encrypted_char = alphabet.charAt(alphabet_size + (alphabet.indexOf(letter_roll_char) - offset))
+        encrypted_char
+      }
+    }
+  }
+
+  /*
+   * reverseEncrypt: like encrypt but pass signal left to right through rotor
+   */
+  def reverseEncrypt(charIn: Char): Char = {
+    if (offset == 0) {
+      val res = alphabet.charAt(letter_roll.indexOf(charIn))
+      res
+    }
+    else {
+      val offset_char = getOffsetChar(charIn, offset)
+      val index_of_offset_char_on_roll = letter_roll.indexOf(offset_char)
+      if ((index_of_offset_char_on_roll - offset) < 0) {
+        val new_char = alphabet.charAt(alphabet_size - (index_of_offset_char_on_roll - offset).abs)
+        new_char
+      }
+      else {
+        val new_char = alphabet.charAt(index_of_offset_char_on_roll - offset)
+        new_char
+      }
+    }
+  }
 
   def nextLetter(x:String) : Char = {
     if (x == "Z") {
@@ -53,10 +110,14 @@ case class Rotor(
     }
   }
 
-  def getOffset: Int = {
-    offset
+  def getOffsetChar(c:Char, offset:Int): Char = {
+    if ((alphabet.indexOf(c) + 1 + offset) > alphabet_size) {
+      alphabet.charAt(alphabet_size - (alphabet.indexOf(c) + 1 + offset))
+    }
+    else {
+      alphabet.charAt(alphabet.indexOf(c) + offset)
+    }
   }
-
   /*
    * get_position_of: Gets the position of an element in list ...
    * @input <- String, Char
