@@ -6,6 +6,10 @@ Pure functional paradigm implementation of the M3 [Enigma](https://en.wikipedia.
   <img width="400" src="data/enigma.jpg">
 </p>
 
+<p align="center">
+  <img width="700" src="data/enigma.gif">
+</p>
+
 ## References
 
 - Tim Perrett has a stylish functional implementation of Enigma using [Scalaz](http://eed3si9n.com/learning-scalaz/Lens.html) Lenses [here](https://github.com/timperrett/enigma).

@@ -1,7 +1,8 @@
 package enigma
 
 case class Reflector(
-                    wiring: String
+                    wiring: String,
+                    model: String
                     ){
   val alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -12,9 +13,11 @@ case class Reflector(
 
 object Reflectors {
   def UKW_B = Reflector(
-    wiring = "YRUHQSLDPXNGOKMIEBFZCWVJAT"
+    wiring = "YRUHQSLDPXNGOKMIEBFZCWVJAT",
+    model = "UKW-B"
   )
   def UKW_C = Reflector(
-    wiring = "FVPJIAOYEDRZXWGCTKUQSBNMHL"
+    wiring = "FVPJIAOYEDRZXWGCTKUQSBNMHL",
+    model = "UKW-C"
   )
 }
