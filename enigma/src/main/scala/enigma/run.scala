@@ -1,12 +1,14 @@
 package enigma
 import scala.util.control.Breaks._
 import Rotors._
+import Reflectors._
 import Rotor._
 
 object Main extends App {
-    val test_rotor = rotor_I('A')
-    val new_rotor = test_rotor.turnRotor
-    println(new_rotor.position, new_rotor.getOffset)
+
+  val test_machine = EngimaMachine(rotor_I('D'), rotor_II('A'), rotor_III('A'), UKW_B)
+  println(test_machine.encode('G').toString())
+
 }
 
 object Helpers {
